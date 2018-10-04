@@ -24,9 +24,9 @@ objects:
     source:
       type: Git
       git:
-        ref: ${SOURCE_BRANCH}
-        uri: ${SOURCE_REPOSITORY_URL} 
-      contextDir: ${CONTEXT_DIR}
+        ref: dev
+        uri: https://github.com/felipetux/microservices-java.git
+      contextDir: /
     strategy: 
       sourceStrategy:
         from:
@@ -37,19 +37,6 @@ objects:
       to:
         kind: ImageStreamTag
         name: ${PARAM_APP_NAME}:latest
-- apiVersion: v1
-  kind: BuildConfig
-  metadata:
-    annotations:
-      pipeline.alpha.openshift.io/uses: '[{"name": "${NAME}", "namespace": "", "kind": "DeploymentConfig"}]'
-    name: "${PARAM_APP_NAME}-pipeline"
-  spec:
-    source:
-      git:
-        uri: "https://github.com/felipetux/openshift-cicd"
-    strategy:
-     jenkinsPipelineStrategy:
-       jenkinsfilePath: "env/${SOURCE_BRANCH}/Jenkinsfile" 
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
