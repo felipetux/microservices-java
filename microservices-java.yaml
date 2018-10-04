@@ -130,6 +130,17 @@ objects:
       deploymentConfig: ${PARAM_APP_NAME}
     sessionAffinity: None
     type: ClusterIP
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: ${PARAM_APP_NAME}
+    labels:
+      application: ${PARAM_APP_NAME}
+  spec:
+    to:
+      kind: Service
+      name: ${APPLICATION_NAME}
+
 - kind: ConfigMap
   apiVersion: v1
   metadata:
