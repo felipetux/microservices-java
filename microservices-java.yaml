@@ -164,7 +164,6 @@ parameters:
 - name: SOURCE_REPOSITORY_URL 
   displayName: Source Repository URL 
   description: The URL of the repository with your application source code 
-  value: https://github.com/felipetux/openshift-hw.git
   required: true
 - name: SOURCE_REPOSITORY_REF
   displayName: Source Repository REF
