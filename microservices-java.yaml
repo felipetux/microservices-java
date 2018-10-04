@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: hello-template
+  name: java-dev-env
   annotations:
-    openshift.io/display-name: Hello World
+    openshift.io/display-name: Java Application DEV
     iconClass: fa fa-code
-    description: Template to generate Hello World application
+    description: Template to generate Java Develop Environment
 objects:
 - apiVersion: v1
   kind: ImageStream
@@ -15,14 +15,18 @@ objects:
     name: ${PARAM_APP_NAME}
 - apiVersion: v1
   kind: BuildConfig
-  metadata:
+  metadata:     
     labels:
       app: ${PARAM_APP_NAME}
     name: ${PARAM_APP_NAME}
   spec:
     runPolicy: Serial     
-    source: 
-      type: Binary
+    source:
+      type: Git
+      git:
+        ref: ${SOURCE_BRANCH}
+        uri: ${SOURCE_REPOSITORY_URL} 
+      contextDir: ${CONTEXT_DIR}
     strategy: 
       sourceStrategy:
         from:
@@ -32,7 +36,20 @@ objects:
     output: 
       to:
         kind: ImageStreamTag
-        name: ${PARAM_IMAGE_NAME}:latest
+        name: ${PARAM_APP_NAME}:latest
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      pipeline.alpha.openshift.io/uses: '[{"name": "${NAME}", "namespace": "", "kind": "DeploymentConfig"}]'
+    name: "${PARAM_APP_NAME}-pipeline"
+  spec:
+    source:
+      git:
+        uri: "https://github.com/felipetux/openshift-cicd"
+    strategy:
+     jenkinsPipelineStrategy:
+       jenkinsfilePath: "env/${SOURCE_BRANCH}/Jenkinsfile" 
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -52,10 +69,10 @@ objects:
           - name: ${PARAM_APP_NAME}
             env:
               - name: TZ
-                value: America/Argentina/Buenos_Aires
+                value: America/Santiago
               - name: LANG_FILE
                 value: hello.es
-            image: ${PARAM_IMAGE_NAME}:latest
+            image: ${PARAM_APP_NAME}:latest
             ports:
               - containerPort: 8080
                 protocol: TCP
@@ -86,7 +103,15 @@ objects:
               requests:
                 cpu: 500m
                 memory: 300Mi
-    triggers: []
+    triggers: 
+    - type: "ImageChange"
+      imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${PARAM_APP_NAME}
+        from:
+          kind: ImageStreamTag
+          name: ${PARAM_APP_NAME}:latest
     replicas: 1 
     strategy: 
       type: Rolling
@@ -124,4 +149,20 @@ parameters:
   displayName: Image name
   name: PARAM_IMAGE_NAME
   value: hello
+  required: false
+- name: SOURCE_REPOSITORY_URL 
+  displayName: Source Repository URL 
+  description: The URL of the repository with your application source code 
+  value: https://github.com/felipetux/openshift-hw.git
+  required: true
+- name: SOURCE_REPOSITORY_REF
+  displayName: Source Repository REF
+  value: dev
+  required: true
+- name: CONTEXT_DIR
+  value: /
+  required: false
+- name: SOURCE_BRANCH
+  displayName: Source Branch
+  value: dev
   required: true
