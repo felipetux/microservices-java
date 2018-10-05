@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: hello-template
+  name: microservices-java
   annotations:
-    openshift.io/display-name: Hello World
-    iconClass: fa fa-code
-    description: Template to generate Hello World application
+    openshift.io/display-name: Microservices Java Template
+    iconClass: icon-rh-openjdk
+    description: 
 objects:
 - apiVersion: v1
   kind: ImageStream
@@ -52,7 +52,7 @@ objects:
           - name: ${PARAM_APP_NAME}
             env:
               - name: TZ
-                value: America/Argentina/Buenos_Aires
+                value: America/Santiago
               - name: LANG_FILE
                 value: hello.es
             image: ${PARAM_IMAGE_NAME}:latest
