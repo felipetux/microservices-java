@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: java-dev-env
+  name: hello-template
   annotations:
-    openshift.io/display-name: Java Application DEV
+    openshift.io/display-name: Hello World
     iconClass: fa fa-code
-    description: Template to generate Java Develop Environment
+    description: Template to generate Hello World application
 objects:
 - apiVersion: v1
   kind: ImageStream
@@ -15,18 +15,14 @@ objects:
     name: ${PARAM_APP_NAME}
 - apiVersion: v1
   kind: BuildConfig
-  metadata:     
+  metadata:
     labels:
       app: ${PARAM_APP_NAME}
     name: ${PARAM_APP_NAME}
   spec:
     runPolicy: Serial     
-    source:
-      type: Git
-      git:
-        ref: ${PARAM_GIT_BRANCH}
-        uri: ${PARAM_GIT_REPO}
-      contextDir: /
+    source: 
+      type: Binary
     strategy: 
       sourceStrategy:
         from:
@@ -36,7 +32,7 @@ objects:
     output: 
       to:
         kind: ImageStreamTag
-        name: ${PARAM_APP_NAME}:latest
+        name: ${PARAM_IMAGE_NAME}:latest
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -56,10 +52,10 @@ objects:
           - name: ${PARAM_APP_NAME}
             env:
               - name: TZ
-                value: America/Santiago
+                value: America/Argentina/Buenos_Aires
               - name: LANG_FILE
                 value: hello.es
-            image: ${PARAM_APP_NAME}:latest
+            image: ${PARAM_IMAGE_NAME}:latest
             ports:
               - containerPort: 8080
                 protocol: TCP
@@ -90,15 +86,7 @@ objects:
               requests:
                 cpu: 500m
                 memory: 300Mi
-    triggers: 
-    - type: "ImageChange"
-      imageChangeParams:
-        automatic: true
-        containerNames:
-        - ${PARAM_APP_NAME}
-        from:
-          kind: ImageStreamTag
-          name: ${PARAM_APP_NAME}:latest
+    triggers: []
     replicas: 1 
     strategy: 
       type: Rolling
@@ -117,17 +105,6 @@ objects:
       deploymentConfig: ${PARAM_APP_NAME}
     sessionAffinity: None
     type: ClusterIP
-- apiVersion: v1
-  kind: Route
-  metadata:
-    name: ${PARAM_APP_NAME}
-    labels:
-      application: ${PARAM_APP_NAME}
-  spec:
-    to:
-      kind: Service
-      name: ${APPLICATION_NAME}
-
 - kind: ConfigMap
   apiVersion: v1
   metadata:
@@ -147,49 +124,4 @@ parameters:
   displayName: Image name
   name: PARAM_IMAGE_NAME
   value: hello
-  required: false
-- name: SOURCE_REPOSITORY_URL 
-  displayName: Source Repository URL 
-  description: The URL of the repository with your application source code 
   required: true
-- name: SOURCE_REPOSITORY_REF
-  displayName: Source Repository REF
-  value: dev
-  required: true
-- name: CONTEXT_DIR
-  value: /
-  required: false
-- name: SOURCE_BRANCH
-  displayName: Source Branch
-  value: dev
-  required: true
-- name: APP_NAME
-  value: ${PARAM_APP_NAME}
-- name: IMAGE_NAME
-  value: ${PARAM_IMAGE_NAME}
-- name: APP_TEMPLATE_FILE
-  value: ${PARAM_APP_TEMPLATE_FILE}
-- name: GIT_REPO
-  value: ${PARAM_GIT_REPO}
-- name: GIT_BRANCH
-  value: ${PARAM_GIT_BRANCH}
-- name: TAG_VERSION
-  value: ${PARAM_TAG_VERSION}
-- name: GIT_SECRET
-  value: git-secret  
-- name: BASE_IMAGE
-  value: redhat-openjdk18-openshift:1.2
-- name: ARTIFACTS_DIR
-  value: ./target
-- name: JENKINS_AGENT
-  value: maven
-- name: COMPILE_COMMAND
-  value: "mvn package -DskipTests"
-- name: TEST_COMMAND
-  value: "mvn test"
-- name: CODE_ANALYSIS_COMMAND
-  value: none
-- name: RELEASE_COMMAND
-  value: none
-- name: TECH
-  value: java
