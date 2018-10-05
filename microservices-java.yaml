@@ -24,8 +24,8 @@ objects:
     source:
       type: Git
       git:
-        ref: dev
-        uri: https://github.com/felipetux/microservices-java.git
+        ref: ${PARAM_GIT_BRANCH}
+        uri: ${PARAM_GIT_REPO}
       contextDir: /
     strategy: 
       sourceStrategy:
@@ -163,3 +163,33 @@ parameters:
   displayName: Source Branch
   value: dev
   required: true
+- name: APP_NAME
+  value: ${PARAM_APP_NAME}
+- name: IMAGE_NAME
+  value: ${PARAM_IMAGE_NAME}
+- name: APP_TEMPLATE_FILE
+  value: ${PARAM_APP_TEMPLATE_FILE}
+- name: GIT_REPO
+  value: ${PARAM_GIT_REPO}
+- name: GIT_BRANCH
+  value: ${PARAM_GIT_BRANCH}
+- name: TAG_VERSION
+  value: ${PARAM_TAG_VERSION}
+- name: GIT_SECRET
+  value: git-secret  
+- name: BASE_IMAGE
+  value: redhat-openjdk18-openshift:1.2
+- name: ARTIFACTS_DIR
+  value: ./target
+- name: JENKINS_AGENT
+  value: maven
+- name: COMPILE_COMMAND
+  value: "mvn package -DskipTests"
+- name: TEST_COMMAND
+  value: "mvn test"
+- name: CODE_ANALYSIS_COMMAND
+  value: none
+- name: RELEASE_COMMAND
+  value: none
+- name: TECH
+  value: java
