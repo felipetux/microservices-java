@@ -9,7 +9,7 @@ import javax.ws.rs.Produces;
 
 
 @Path("/hello")
-public class Microservices extends Application {
+public class Hello extends Application {
 
 	@GET
 	@Produces("text/plain")
