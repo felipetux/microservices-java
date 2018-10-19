@@ -15,7 +15,7 @@ public class Test extends Application {
 
 	@GET
 	@Produces("text/plain")
-	public Response doGet() {
+	public String doGet() {
 		//return Response.ok(dateFormat.format(date)).build();
 		return "Date :" + new Date().toString();
 		
