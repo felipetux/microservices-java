@@ -9,13 +9,15 @@ import javax.ws.rs.Produces;
 import java.util.Date;
 
 
+
 @Path("/test")
 public class Test extends Application {
 
 	@GET
 	@Produces("text/plain")
 	public Response doGet() {
-		return Response.ok(dateFormat.format(date)).build();
+		//return Response.ok(dateFormat.format(date)).build();
+		return "Date :" + new Date().toString();
 		
 		//DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		//Date date = new Date();
