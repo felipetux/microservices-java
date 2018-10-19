@@ -3,8 +3,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.veicot</groupId>
-  <artifactId>openshift-hello-world</artifactId>
-  <name>OpenShift Hello World</name>
+  <artifactId>rest-api</artifactId>
+  <name>Rest Microservices</name>
   <version>1.0.0</version>
   <packaging>war</packaging>
 
@@ -29,7 +29,7 @@
   </dependencyManagement>
 
   <build>
-    <finalName>hello</finalName>
+    <finalName>rest-microservices</finalName>
     <plugins>
       <plugin>
         <groupId>org.wildfly.swarm</groupId>
